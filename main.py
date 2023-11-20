@@ -3,14 +3,14 @@ from flask import Flask, redirect, request
 import requests
 import re
 import argparse
-
+import waitress
 
 app = Flask(__name__)
 
 
 # Set your proxy information here
-PROXY_HOST = os.environ.get('PROXY_HOST', '127.0.0.1')
-PROXY_PORT = int(os.environ.get('PROXY_PORT', '40000'))
+PROXY_HOST = os.environ.get('PROXY_HOST', '')
+PROXY_PORT = int(os.environ.get('PROXY_PORT', ''))
 PROXY_USERNAME = os.environ.get('PROXY_USERNAME', '')
 PROXY_PASSWORD = os.environ.get('PROXY_PASSWORD', '')
 # Read host and port from environment variables or use defaults
@@ -84,6 +84,7 @@ if __name__ == '__main__':
     # app.run(host=args.host, port=args.port)
     
     # Run the Flask application
-    app.run(host=HOST, port=PORT)
+    from waitress import serve
+    serve(app, host=HOST, port=PORT)
     
 

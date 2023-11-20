@@ -17,11 +17,11 @@ ENV PROXY_USERNAME $PROXY_USERNAME
 ENV PROXY_PASSWORD $PROXY_PASSWORD
 
 # Set default values for host and port (can be overridden when running the container)
-ENV HOST=0.0.0.0
-ENV PORT=5000
+ENV HOST $HOST
+ENV PORT $PORT
 
 # Make port 5000 available to the world outside this container
-EXPOSE 5000
+EXPOSE $PORT
 
 # Run the Python script with CMD
 CMD ["python", "main.py"]
