@@ -1,14 +1,22 @@
 version: '3'
 
-services:
+networks:
+  xhslink-proxy:
+    name: proxy_network
+    external: true
+
+services: 
   xhs-link:
     container_name: xhs-link
     build:
       context: .
     image: xhs-link:latest
+    restart: unless-stopped
+    networks: 
+      - xhslink-proxy
     environment:
-      PROXY_HOST: "127.0.0.1"
-      PROXY_PORT: "40001"
+      PROXY_HOST: ""
+      PROXY_PORT: ""
       PROXY_USERNAME: ""
       PROXY_PASSWORD: ""
       HOST: "0.0.0.0"

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xhslink Resolver</title>
+</head>
+<body>
+    <h1>xhslink Resolver</h1>
+
+    <p>Removes hidden tracking parameter in xhslink dot com.</p>
+    <p><strong>STILL UNDER EXTENSIVE DEVELOPMENT</strong></p>
+    <p>This site is also available at <a href="https://xhslink.icu"><code>xhslink.icu</code></a></p>
+    
+    <h2>Usage</h2>
+
+        <p>Suppose you have a link like: <code>(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
+
+        <strong>Redirect</strong>
+        <p>Replace "com" with "icu" in you link. </p>
+        <p><code>https://xhslink.icu/YOUR_SHORT_CODE</code></p>
+
+        <strong>Resolve the code</strong>
+        <p><code>https://xhs.li/code/YOUR_SHORT_CODE</code></p>
+
+        <strong>Resolve the full URL</strong>
+        <p><code>https://xhs.li/full/?url=(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
+
+
+    <h2>Try it out</h2>
+    <label for="shortlink">Enter Full Shortlink:</label>
+    <input type="text" id="shortlink" name="shortlink" required>
+    <button onclick="resolveShortlink()">Resolve the full URL</button>
+
+    <p>Resolved URL: <code id="result"></code></p>
+    
+    <p>---</p>
+    <footer>
+        <p>© 2023 Little Sweet Potato. All rights reserved. </p>
+        <a href="https://github.com/usexhs/">Source Code</p>
+    </footer>
+
+    <script>
+        function resolveShortlink() {
+            var shortlink = document.getElementById("shortlink").value;
+
+            fetch(`/full/?url=${shortlink}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("result").innerText = `${data}`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("result").innerText = 'Error resolving shortlink.';
+                });
+        }
+    </script>
+</body>
+</html>
+

@@ -1,5 +1,6 @@
 import os  
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, send_file
+from urllib.parse import unquote
 import requests
 import re
 import argparse
@@ -19,7 +20,8 @@ PORT = int(os.environ.get('PORT', '5000'))
 
 
 # Define a function to make HTTP requests via the proxy
-def make_request(url):
+def get_307(url):
+    # comment out the proxies if you don't need it
     proxies = {
         'http': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
         'https': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
@@ -32,8 +34,12 @@ def make_request(url):
     except requests.RequestException as e:
         print(f"Error making request: {e}")
         return None
-        
-    return response
+
+    # Extract the real location from the 307 redirect
+    real_location = response.headers['Location']
+    real_location = re.sub(r'\?.*', '', real_location)  # Remove the query string
+
+    return real_location
 
 
 # Define a function to validate alphanumeric string
@@ -41,37 +47,52 @@ def is_valid_alphanumeric(s):
     return bool(re.match("^[a-zA-Z0-9]+$", s))
 
 
-# Define a route for handling shortlinks
+# Serve the frontend
+@app.route('/', methods=['GET'])
+def handle_index():
+    return send_file('index.html')
+
+
+# Define a route for redirecting
 @app.route('/<shortlink>', methods=['GET'])
 def handle_shortlink(shortlink):
     if not is_valid_alphanumeric(shortlink):
         return "Invalid shortlink format"
 
     full_url = f'https://xhslink.com/{shortlink}'
-    response = make_request(full_url)
-
-    # Extract the real location from the 307 redirect
-    real_location = response.headers['Location']
-    real_location = re.sub(r'\?.*', '', real_location)  # Remove the query string
+    real_location = get_307(full_url)
 
     return redirect(real_location, code=302)
 
 
-# Define a route for handling API requests
-@app.route('/lookup/<shortlink>', methods=['GET'])
-def handle_api(shortlink):
+# Define a route for handling shortcode requests
+@app.route('/code/<shortlink>', methods=['GET'])
+def resolve_code(shortlink):
     if not is_valid_alphanumeric(shortlink):
         return "Invalid shortlink format"
 
     # Construct the full shortlink URL
     full_shortlink_url = f'https://xhslink.com/{shortlink}'
-
     # Do the same as in the handle_shortlink function
-    response = make_request(full_shortlink_url)
-    real_location = response.headers['Location']
-    real_location = re.sub(r'\?.*', '', real_location)  # Remove the query string
+    real_location = get_307(full_shortlink_url)
 
     return real_location
+
+
+# Define a route for handling full url requests
+@app.route('/full/', methods=['GET'])
+def resolve_full():
+    full_url = request.args.get('url', '')
+
+    # Extract the shortlink from the full URL (assuming it follows the pattern shortlink.com/xxxxxx)
+    match = re.search(r'xhslink\.com/([a-zA-Z0-9]+)', full_url)
+
+    if match:
+        shortlink = match.group(1)
+        # Make a request to resolve the shortlink
+        real_location = get_307(f'https://xhslink.com/{shortlink}')
+
+        return real_location
 
 
 if __name__ == '__main__':
