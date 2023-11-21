@@ -14,6 +14,8 @@ services:
     restart: unless-stopped
     networks: 
       - xhslink-proxy
+    volumes:
+      - ./index.html:/app/index.html
     environment:
       PROXY_HOST: ""
       PROXY_PORT: ""
