@@ -28,11 +28,14 @@
 
 
     <h2>Try it out</h2>
-    <label for="shortlink">Enter Full Shortlink:</label>
-    <input type="text" id="shortlink" name="shortlink" required>
-    <button onclick="resolveShortlink()">Resolve the full URL</button>
-
-    <p>Resolved URL: <code id="result"></code></p>
+    <label for="fullurl">Enter URL here:</label>
+    <input type="text" id="fullurl" name="fullurl" required>
+    <button onclick="resolveFullURL()">Resolve</button>
+    
+    <p>Resolved URL: </p>
+    <p><code id="result"></code></p>
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    <p id="copied"></p>
     
     <p>---</p>
     <footer>
@@ -41,18 +44,42 @@
     </footer>
 
     <script>
-        function resolveShortlink() {
-            var shortlink = document.getElementById("shortlink").value;
+        function resolveFullURL() {
+            document.getElementById("result").innerText = 'resolving...';
+            document.getElementById("copied").innerText = '';
 
-            fetch(`/full/?url=${shortlink}`)
+            var fullURL = document.getElementById("fullurl").value;
+
+            fetch(`/full/?url=${fullURL}`)
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById("result").innerText = `${data}`;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById("result").innerText = 'Error resolving shortlink.';
+                    document.getElementById("result").innerText = 'Error resolving full URL.';
                 });
+        };
+        function copyToClipboard() {
+            /* Get the text field */
+            var copyText = document.getElementById("result");
+
+            // Select the text field
+            // copyText.select();
+            // copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the text field
+            navigator.clipboard.writeText(copyText.innerText)
+                .then(() => {
+                    document.getElementById("copied").innerText = 'Copied!';
+                })
+                .catch((err) => {
+                    document.getElementById("copied").innerText = 'Failed to Copy';
+                    console.error('Unable to copy text: ', err);
+                });
+
+            /* Alert the copied text */
+            
         }
     </script>
 </body>
