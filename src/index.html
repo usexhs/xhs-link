@@ -1,98 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xhslink Resolver</title>
 </head>
+
 <body>
-    <h1>xhslink Resolver</h1>
+    <div style="word-wrap: break-word; font-family: sans-serif;">
+        <h1>xhslink Resolver</h1>
+        <div>
+            <p>Inspired by <a href="https://b23.wtf"><code>b23.wtf</code></a>.</p>
+            <p>Remove hidden tracking parameters in xhslink.com</p>
+            <p>STILL UNDER INTENSIVE DEVELOPMENT</p>
+        </div>
 
-    <p>Inspired by <a href="https://b23.wtf"><code>b23.wtf</code></a></p>
+        <h2>Try it out</h2>
+        <div>
+            <p><label for="fullurl">Enter your URL here:</label>
+            <input type="text" id="fullurl" name="fullurl" required></p>
+            <button onclick="resolveFullURL()">Resolve</button>
 
-    <p>Remove hidden tracking parameters in xhslink dot com.</p>
-    <p><strong>STILL UNDER INTENSIVE DEVELOPMENT</strong></p>
-    <p>This site is also available at <a href="https://xhslink.icu"><code>xhslink.icu</code></a></p>
-    
-    <h2>Usage</h2>
+            <p>Resolved URL: <code id="result"></code></p>
+            <p>
+                <button onclick="copyToClipboard()">Copy to Clipboard</button>
+                <span id="copied"></span>
+            </p>
+        </div>
 
-        <p>Suppose you have a link like: <code>http://xhslink.com/YOUR_SHORTCODE</code></p>
+        <hr>
 
-        <strong>Redirect</strong>
-        <p>Replace "com" with "icu" in your link. </p>
-        <p><code>https://xhslink.icu/YOUR_SHORTCODE</code></p>
+        <h2>Usage Example</h2>
+        <div>
+            <p>Look at this text:</p>
+            <p style="color: grey;max-width: 20em;">
+                36 摆烂可耻但很快乐发布了一篇小红书笔记，快来看吧！
+                😆 Ft0nRcmbgNxWi4i 😆 http://xhslink.com/o2s5so，
+                复制本条信息，打开【小红书】App查看精彩内容！
+            </p>
 
-        <strong>Resolve the code</strong>
-        <p><code>https://xhs.li/code/YOUR_SHORTCODE</code></p>
+            <p>
+                Just <strong>copy</strong> the text,
+                <strong>paste</strong> into the form above,
+                and you will get the original link.
+            </p>
 
-        <strong>Resolve the full URL</strong>
-        <p><code>https://xhs.li/full/?url=http://xhslink.com/YOUR_SHORTCODE</code></p>
+            <p>You can also try the following usages:</p>
+            <!-- <hr> -->
+            <p><strong>Redirect</strong>: replace "com" with <strong style="font-size: 1.2em;">"icu"</strong>. </p>
+            <div style="color: grey;">
+                <code>$ curl -v http://xhslink.<strong style="font-size: 1.2em;">icu</strong>/o2s5so</code>
+                <!-- <br><code>...</code>
+            <br><code>< HTTP/1.1 301 Moved Permanently</code>
+            <br><code>...</code>
+            <br><code>< Location: https://xhslink.icu/o2s5so</code> -->
+                <br><code>...</code>
+                <br><code>&lt; HTTP/2 302 </code>
+                <br><code>...</code>
+                <br><code>&lt; location: https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a</code>
+                <br><code>...</code>
+            <!-- <br><code>
+                &lt;p&gt;You should be redirected automatically to the target URL: 
+                &lt;a href=&quot;https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a&quot;&gt;
+                https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a&lt;a&gt;. 
+                If not, click the link.
+            </code> -->
 
+            </div>
 
-    <h2>Try it out</h2>
-    <label for="fullurl">Enter your full URL here:</label>
-    <input type="text" id="fullurl" name="fullurl" required>
-    <button onclick="resolveFullURL()">Resolve</button>
-    
-    <p>Resolved URL: <code id="result"></code></p>
-    <button onclick="copyToClipboard()">Copy to Clipboard</button>
-    <span id="copied"></span>
-    
-    <p>---</p>
-    <footer>
-        <p>© 2023 Little Sweet Potato. All rights reserved. </p>
-        <a href="https://github.com/usexhs/">Source Code</p>
-    </footer>
+            <p><strong>Resolve the code</strong></p>
+            <div style="color: grey;">
+                <code>$ curl https://xhslink.icu/code/o2s5so</code>
+                <p><code>https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a%</code></p>
 
-    <script>
-        function resolveFullURL() {
-            document.getElementById("copied").innerText = '';
+            </div>
+            <p><strong>Resolve the full URL</strong></p>
+            <p style="max-width: 40em;"><em>
+                    Actually, you can fill the whole shared text into the query string.
+                    <br>This is the API behind the "Resolve" button above.
+                </em></p>
+            <div style="color: grey;">
+                <p><code>$ curl https://xhslink.icu/full/?url=http://xhslink.com/o2s5so</code></p>
+                <p><code>https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a%</code></p>
+            </div>
+            <hr>
 
-            var fullURL = document.getElementById("fullurl").value;
-            var expr = /xhslink\.com\/([a-zA-Z0-9]+)/gm;
-            var regex = new RegExp(expr);
+            <p><strong>By contrast</strong>, If you visit this shortlink directly, you will get:</p>
+            <div style="color: grey;">
+                <p><code>$ curl -I http://xhslink.com/o2s5so</code></p>
+                <p><code>Location: https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a?app_platform=ios&app_version=7.80&share_from_user_hidden=true&type=normal&xhsshare=CopyLink&appuid=5f2373dc0000000001008b32&apptime=1679927306</code></p>
+            </div>
 
-            if (fullURL.match(regex)) {
-                document.getElementById("result").innerText = 'URL found, resolving...';
-                
-                fullURL = fullURL.match(regex);
+            <hr>
+            <footer>
+                <p>Also available at <a href="https://xhs.li"><code>xhs.li</code></a></p>
+                <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/">Source Code</p>
 
-                fetch(`/full/?url=${fullURL}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById("result").innerText = `${data}`;
+            </footer>
+        </div>
+        <script>
+            function resolveFullURL() {
+                document.getElementById("copied").innerText = '';
+
+                var fullURL = document.getElementById("fullurl").value;
+                var expr = /xhslink\.com\/([a-zA-Z0-9]+)/gm;
+                var regex = new RegExp(expr);
+
+                if (fullURL.match(regex)) {
+                    document.getElementById("result").innerText = 'URL found, resolving...';
+
+                    fullURL = fullURL.match(regex);
+
+                    fetch(`/full/?url=${fullURL}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("result").innerText = `${data}`;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById("result").innerText = 'Error resolving the full URL.';
+                        });
+                }
+                else {
+                    document.getElementById("result").innerText = 'No valid URL found';
+                }
+            };
+            function copyToClipboard() {
+                /* Get the text field */
+                var copyText = document.getElementById("result");
+
+                // Select the text field
+                // copyText.select();
+                // copyText.setSelectionRange(0, 99999); // For mobile devices
+
+                // Copy the text inside the text field
+                navigator.clipboard.writeText(copyText.innerText)
+                    .then(() => {
+                        document.getElementById("copied").innerText = 'Copied!';
                     })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        document.getElementById("result").innerText = 'Error resolving the full URL.';
+                    .catch((err) => {
+                        document.getElementById("copied").innerText = 'Failed to Copy';
+                        console.error('Unable to copy text: ', err);
                     });
             }
-            else {
-                document.getElementById("result").innerText = 'No valid URL found';
-            }
-        };
-        function copyToClipboard() {
-            /* Get the text field */
-            var copyText = document.getElementById("result");
-
-            // Select the text field
-            // copyText.select();
-            // copyText.setSelectionRange(0, 99999); // For mobile devices
-
-            // Copy the text inside the text field
-            navigator.clipboard.writeText(copyText.innerText)
-                .then(() => {
-                    document.getElementById("copied").innerText = 'Copied!';
-                })
-                .catch((err) => {
-                    document.getElementById("copied").innerText = 'Failed to Copy';
-                    console.error('Unable to copy text: ', err);
-                });
-
-            /* Alert the copied text */
-            
-        }
-    </script>
+        </script>
 </body>
-</html>
 
+</html>
