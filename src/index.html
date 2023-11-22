@@ -8,34 +8,35 @@
 <body>
     <h1>xhslink Resolver</h1>
 
-    <p>Removes hidden tracking parameter in xhslink dot com.</p>
-    <p><strong>STILL UNDER EXTENSIVE DEVELOPMENT</strong></p>
+    <p>Inspired by <a href="https://b23.wtf"><code>b23.wtf</code></a></p>
+
+    <p>Remove hidden tracking parameters in xhslink dot com.</p>
+    <p><strong>STILL UNDER INTENSIVE DEVELOPMENT</strong></p>
     <p>This site is also available at <a href="https://xhslink.icu"><code>xhslink.icu</code></a></p>
     
     <h2>Usage</h2>
 
-        <p>Suppose you have a link like: <code>(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
+        <p>Suppose you have a link like: <code>http://xhslink.com/YOUR_SHORTCODE</code></p>
 
         <strong>Redirect</strong>
-        <p>Replace "com" with "icu" in you link. </p>
-        <p><code>https://xhslink.icu/YOUR_SHORT_CODE</code></p>
+        <p>Replace "com" with "icu" in your link. </p>
+        <p><code>https://xhslink.icu/YOUR_SHORTCODE</code></p>
 
         <strong>Resolve the code</strong>
-        <p><code>https://xhs.li/code/YOUR_SHORT_CODE</code></p>
+        <p><code>https://xhs.li/code/YOUR_SHORTCODE</code></p>
 
         <strong>Resolve the full URL</strong>
-        <p><code>https://xhs.li/full/?url=(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
+        <p><code>https://xhs.li/full/?url=http://xhslink.com/YOUR_SHORTCODE</code></p>
 
 
     <h2>Try it out</h2>
-    <label for="fullurl">Enter URL here:</label>
+    <label for="fullurl">Enter your full URL here:</label>
     <input type="text" id="fullurl" name="fullurl" required>
     <button onclick="resolveFullURL()">Resolve</button>
     
-    <p>Resolved URL: </p>
-    <p><code id="result"></code></p>
-        <button onclick="copyToClipboard()">Copy to Clipboard</button>
-    <p id="copied"></p>
+    <p>Resolved URL: <code id="result"></code></p>
+    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    <span id="copied"></span>
     
     <p>---</p>
     <footer>
@@ -45,20 +46,30 @@
 
     <script>
         function resolveFullURL() {
-            document.getElementById("result").innerText = 'resolving...';
             document.getElementById("copied").innerText = '';
 
             var fullURL = document.getElementById("fullurl").value;
+            var expr = /xhslink\.com\/([a-zA-Z0-9]+)/gm;
+            var regex = new RegExp(expr);
 
-            fetch(`/full/?url=${fullURL}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("result").innerText = `${data}`;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById("result").innerText = 'Error resolving full URL.';
-                });
+            if (fullURL.match(regex)) {
+                document.getElementById("result").innerText = 'URL found, resolving...';
+                
+                fullURL = fullURL.match(regex);
+
+                fetch(`/full/?url=${fullURL}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById("result").innerText = `${data}`;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById("result").innerText = 'Error resolving the full URL.';
+                    });
+            }
+            else {
+                document.getElementById("result").innerText = 'No valid URL found';
+            }
         };
         function copyToClipboard() {
             /* Get the text field */
