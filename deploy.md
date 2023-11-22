@@ -15,7 +15,7 @@ git clone https://github.com/usexhs/xhs-link.git
 cd xhs-link/src
 ```
 
-### w/o Proxy
+<!-- ### w/o Proxy
 
 The default config presumes a socks5 proxy. If you do not want to use a proxy, comment out the proxy settings in `main.py`. 
 
@@ -24,7 +24,7 @@ The default config presumes a socks5 proxy. If you do not want to use a proxy, c
 -        'http': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
 -        'https': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
     }
-```
+``` -->
 
 ### w/ Proxy
 

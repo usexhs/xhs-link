@@ -1,7 +1,9 @@
 <h1>xhslink Resolver</h1>
 
-<p>Removes hidden tracking parameter in xhslink dot com.</p>
-<p><strong>STILL UNDER EXTENSIVE DEVELOPMENT</strong></p>
+<p>Inspired by <a href="https://b23.wtf"><code>b23.wtf</code></a></p>
+
+<p>Remove hidden tracking parameters in xhslink dot com.</p>
+<p><strong>STILL UNDER INTENSIVE DEVELOPMENT</strong></p>
 
 ## Deploy Your Own
 
@@ -12,7 +14,7 @@ Go to [Deploy.md](./deploy.md)
 <p>Suppose you have a link like: <code>(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
 
 <strong>Redirect</strong>
-<p>Replace "com" with "icu" in you link. </p>
+<p>Replace "com" with "icu" in your link. </p>
 <p><code>https://xhslink.icu/YOUR_SHORT_CODE</code></p>
 
 <strong>API: Resolve the code</strong>
