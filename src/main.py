@@ -3,32 +3,33 @@ from flask import Flask, redirect, request, send_file
 from urllib.parse import unquote
 import requests
 import re
-import argparse
-import waitress
+# import argparse
+# import waitress
 
 app = Flask(__name__)
 
 
 # Set your proxy information here
 PROXY_HOST = os.environ.get('PROXY_HOST', '')
-PROXY_PORT = int(os.environ.get('PROXY_PORT', ''))
+PROXY_PORT = os.environ.get('PROXY_PORT', '')
+PROXY_PORT = int(PROXY_PORT) if PROXY_PORT != '' else 0
 PROXY_USERNAME = os.environ.get('PROXY_USERNAME', '')
 PROXY_PASSWORD = os.environ.get('PROXY_PASSWORD', '')
+PROXIES = {
+    'http':  f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
+    'https': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
+} if (PROXY_HOST != '' and PROXY_PORT != 0) else {}
+
 # Read host and port from environment variables or use defaults
 HOST = os.environ.get('HOST', '0.0.0.0')
-PORT = int(os.environ.get('PORT', '5000'))
+PORT = os.environ.get('PORT', '5000')
+PORT = int(PORT) if PORT != '' else 0
 
 
 # Define a function to make HTTP requests via the proxy
 def get_307(url):
-    # comment out the proxies if you don't need it
-    proxies = {
-        'http': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
-        'https': f'socks5://{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}',
-    }
-
     try:
-        response = requests.get(url, proxies=proxies, allow_redirects=False)
+        response = requests.get(url, proxies=PROXIES, allow_redirects=False)
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
         
     except requests.RequestException as e:
@@ -54,27 +55,27 @@ def handle_index():
 
 
 # Define a route for redirecting
-@app.route('/<shortlink>', methods=['GET'])
-def handle_shortlink(shortlink):
-    if not is_valid_alphanumeric(shortlink):
-        return "Invalid shortlink format"
+@app.route('/<shortcode>', methods=['GET'])
+def handle_shortcode(shortcode):
+    if not is_valid_alphanumeric(shortcode):
+        return "Invalid shortcode"
 
-    full_url = f'https://xhslink.com/{shortlink}'
+    full_url = f'https://xhslink.com/{shortcode}'
     real_location = get_307(full_url)
 
     return redirect(real_location, code=302)
 
 
 # Define a route for handling shortcode requests
-@app.route('/code/<shortlink>', methods=['GET'])
-def resolve_code(shortlink):
-    if not is_valid_alphanumeric(shortlink):
-        return "Invalid shortlink format"
+@app.route('/code/<shortcode>', methods=['GET'])
+def resolve_code(shortcode):
+    if not is_valid_alphanumeric(shortcode):
+        return "Invalid shortcode"
 
-    # Construct the full shortlink URL
-    full_shortlink_url = f'https://xhslink.com/{shortlink}'
-    # Do the same as in the handle_shortlink function
-    real_location = get_307(full_shortlink_url)
+    # Construct the full URL
+    full_url = f'https://xhslink.com/{shortcode}'
+    # Do the same as in the handle_shortcode function
+    real_location = get_307(full_url)
 
     return real_location
 
@@ -84,20 +85,21 @@ def resolve_code(shortlink):
 def resolve_full():
     full_url = request.args.get('url', '')
 
-    # Extract the shortlink from the full URL (assuming it follows the pattern shortlink.com/xxxxxx)
+    # Extract the shortcode from the full URL (assuming it follows the pattern xhslink.com/xxxxxx)
     match = re.search(r'xhslink\.com/([a-zA-Z0-9]+)', full_url)
 
     if match:
-        shortlink = match.group(1)
-        # Make a request to resolve the shortlink
-        real_location = get_307(f'https://xhslink.com/{shortlink}')
+        shortcode = match.group(1)
+        # Make a request to resolve the shortcode
+        real_location = get_307(f'https://xhslink.com/{shortcode}')
 
         return real_location
-
+    else: 
+        return "No valid URL found"
 
 if __name__ == '__main__':
     # Parse command-line arguments
-    # parser = argparse.ArgumentParser(description='Run the server for shortlink processing')
+    # parser = argparse.ArgumentParser(description='Run the server for shortcode processing')
     # parser.add_argument('host', type=str, default='0.0.0.0', help='Server address')
     # parser.add_argument('port', type=int, default=5000, help='Port number')
     # args = parser.parse_args()
