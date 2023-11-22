@@ -29,4 +29,4 @@ Go to [Deploy.md](./deploy.md)
 
 ## Verify the Commits
 
-Commits in this repo are signed by a PGP key. Get it [here](./lsp-FF032BF03032817CF036E79A38E8FCA7CE99D03E-public.asc).
+Commits in this repo are signed by a PGP key. Get it [here](./lsp-public.asc).
