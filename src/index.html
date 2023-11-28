@@ -15,17 +15,24 @@
             <p>Remove hidden tracking parameters in xhslink.com</p>
             <p>STILL UNDER INTENSIVE DEVELOPMENT</p>
         </div>
-
-        <h2>Try it out</h2>
+        <hr>
+        <p>Replace "com" with <strong style="font-size: 1.2em;">"icu"</strong> to visit directly, or</p>
+        <!-- <h2>Try it out</h2> -->
         <div>
-            <p><label for="fullurl">Enter your URL here:</label>
-            <input type="text" id="fullurl" name="fullurl" required></p>
+            <p>
+                <label for="fullurl">Enter your URL here to resolve:</label>
+                <input type="text" id="fullurl" name="fullurl" required>
+            </p>
             <button onclick="resolveFullURL()">Resolve</button>
 
             <p>Resolved URL: <code id="result"></code></p>
             <p>
                 <button onclick="copyToClipboard()">Copy to Clipboard</button>
                 <span id="copied"></span>
+            </p>
+            <p>
+                <button onclick="visitResolvedURL()">Open in New Tab</button>
+                <span id="vru-error"></span>
             </p>
         </div>
 
@@ -46,7 +53,7 @@
                 and you will get the original link.
             </p>
 
-            <p>You can also try the following usages:</p>
+            <!-- <p>You can also try the following usages:</p> -->
             <!-- <hr> -->
             <p><strong>Redirect</strong>: replace "com" with <strong style="font-size: 1.2em;">"icu"</strong>. </p>
             <div style="color: grey;">
@@ -95,13 +102,14 @@
             <hr>
             <footer>
                 <p>Also available at <a href="https://xhs.li"><code>xhs.li</code></a></p>
-                <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/">Source Code</p>
+                <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/">Source Code</a></p>
 
             </footer>
         </div>
         <script>
             function resolveFullURL() {
                 document.getElementById("copied").innerText = '';
+                document.getElementById("vru-error").innerText = '';
 
                 var fullURL = document.getElementById("fullurl").value;
                 var expr = /xhslink\.com\/([a-zA-Z0-9]+)/gm;
@@ -127,6 +135,7 @@
                 }
             };
             function copyToClipboard() {
+                document.getElementById("copied").innerText = '';
                 /* Get the text field */
                 var copyText = document.getElementById("result");
 
@@ -143,6 +152,20 @@
                         document.getElementById("copied").innerText = 'Failed to Copy';
                         console.error('Unable to copy text: ', err);
                     });
+            };
+            function visitResolvedURL() {
+                document.getElementById("vru-error").innerText = '';
+
+                var ResolvedURL = document.getElementById("result").innerText;
+                var expr = /www\.xiaohongshu\.com/gm;
+                var regex = new RegExp(expr);
+
+                if (ResolvedURL.match(regex)) {
+                    window.open(ResolvedURL, '_blank', 'noopener,noreferrer');
+                }
+                else {
+                    document.getElementById("vru-error").innerText = 'No valid URL found';
+                }
             }
         </script>
 </body>
