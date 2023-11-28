@@ -3,11 +3,31 @@ from flask import Flask, redirect, request, send_file
 from urllib.parse import unquote
 import requests
 import re
+import logging
 # import argparse
 # import waitress
 
 app = Flask(__name__)
 
+# logging config
+# logging.basicConfig(level=logging.DEBUG)
+from logging.config import dictConfig
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
+logger = logging.getLogger(__name__)
 
 # Set your proxy information here
 PROXY_HOST = os.environ.get('PROXY_HOST', '')
@@ -51,12 +71,22 @@ def is_valid_alphanumeric(s):
 # Serve the frontend
 @app.route('/', methods=['GET'])
 def handle_index():
+    # Extract the client IP from the X-Forwarded-For header or use the remote address
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # Log the client IP along with other information
+    app.logger.info(f"GET /, Client IP: {client_ip}")
+
     return send_file('index.html')
 
 
 # Define a route for redirecting
 @app.route('/<shortcode>', methods=['GET'])
 def handle_shortcode(shortcode):
+    # Extract the client IP from the X-Forwarded-For header or use the remote address
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # Log the client IP along with other information
+    app.logger.info(f"GET /{shortcode}, Client IP: {client_ip}")
+
     if not is_valid_alphanumeric(shortcode):
         return "Invalid shortcode"
 
@@ -69,6 +99,11 @@ def handle_shortcode(shortcode):
 # Define a route for handling shortcode requests
 @app.route('/code/<shortcode>', methods=['GET'])
 def resolve_code(shortcode):
+    # Extract the client IP from the X-Forwarded-For header or use the remote address
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # Log the client IP along with other information
+    app.logger.info(f"GET /code/{shortcode}, Client IP: {client_ip}")
+
     if not is_valid_alphanumeric(shortcode):
         return "Invalid shortcode"
 
@@ -84,6 +119,11 @@ def resolve_code(shortcode):
 @app.route('/full/', methods=['GET'])
 def resolve_full():
     full_url = request.args.get('url', '')
+
+    # Extract the client IP from the X-Forwarded-For header or use the remote address
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # Log the client IP along with other information
+    app.logger.info(f"GET /full/?url={full_url}, Client IP: {client_ip}")
 
     # Extract the shortcode from the full URL (assuming it follows the pattern xhslink.com/xxxxxx)
     match = re.search(r'xhslink\.com/([a-zA-Z0-9]+)', full_url)
