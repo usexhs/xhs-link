@@ -57,7 +57,7 @@ def get_307(url):
     session.mount('https://', adapter)
     
     try:
-        response = session.get(url, proxies=proxies, allow_redirects=False, timeout=10)
+        response = session.get(url, proxies=PROXIES, allow_redirects=False, timeout=5)
         app.logger.info(f"HTTP Request - URL: {url}, Status Code: {response.status_code}")
         # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
         
@@ -68,6 +68,7 @@ def get_307(url):
     # Extract the real location from the 307 redirect
     real_location = response.headers['Location']
     real_location = re.sub(r'\?.*', '', real_location)  # Remove the query string
+    app.logger.info(f"Resolve Successful - URL: {url}, Result: {real_location}")
 
     return real_location
 
@@ -97,6 +98,7 @@ def handle_shortcode(shortcode):
     app.logger.info(f"GET /{shortcode}, Client IP: {client_ip}")
 
     if not is_valid_alphanumeric(shortcode):
+        app.logger.info(f"Invalid shortcode: {shortcode}")
         return "Invalid shortcode"
 
     full_url = f'https://xhslink.com/{shortcode}'
@@ -114,6 +116,7 @@ def resolve_code(shortcode):
     app.logger.info(f"GET /code/{shortcode}, Client IP: {client_ip}")
 
     if not is_valid_alphanumeric(shortcode):
+        app.logger.info(f"Invalid shortcode: {shortcode}")
         return "Invalid shortcode"
 
     # Construct the full URL
@@ -144,6 +147,7 @@ def resolve_full():
 
         return real_location
     else: 
+        app.logger.info(f"No valid URL found in \"{full_url}\" ")
         return "No valid URL found"
 
 if __name__ == '__main__':
