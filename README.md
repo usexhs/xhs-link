@@ -13,6 +13,14 @@ Go to [Deploy.md](./deploy.md)
 
 <p>Suppose you have a link like: <code>(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
 
+Here `YOUR_SHORT_CODE` should be an alphanumberic string, like
+
+ - `o2s5so`
+ - `TmtPSw`
+ - `cUFu9d`
+ - `kKsk`
+ - `114514`
+
 <strong>Redirect</strong>
 <p>Replace "com" with "icu" in your link. </p>
 <p><code>https://xhslink.icu/YOUR_SHORT_CODE</code></p>
