@@ -2,6 +2,8 @@ import os
 from flask import Flask, redirect, request, send_file
 from urllib.parse import unquote
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import re
 import logging
 # import argparse
