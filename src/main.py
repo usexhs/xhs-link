@@ -48,13 +48,20 @@ PORT = int(PORT) if PORT != '' else 0
 
 # Define a function to make HTTP requests via the proxy
 def get_307(url):
+    session = requests.Session()
+    retries = Retry(total=5, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retries)
+    # session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
     try:
-        response = requests.get(url, proxies=PROXIES, allow_redirects=False)
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+        response = session.get(url, proxies=proxies, allow_redirects=False, timeout=10)
+        app.logger.info(f"HTTP Request - URL: {url}, Status Code: {response.status_code}")
+        # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
         
     except requests.RequestException as e:
-        print(f"Error making request: {e}")
-        return None
+        app.logger.error(f"Error making HTTP request - URL: {url}, Error: {e}")
+        return f"Failed making request, please try again."
 
     # Extract the real location from the 307 redirect
     real_location = response.headers['Location']
