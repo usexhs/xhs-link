@@ -58,7 +58,7 @@ def get_307(url):
     
     try:
         response = session.get(url, proxies=PROXIES, allow_redirects=False, timeout=5)
-        app.logger.info(f"HTTP Request - URL: {url}, Status Code: {response.status_code}")
+        app.logger.info(f"HTTP Request via \"{PROXIES}\" - URL: {url}, Status Code: {response.status_code}")
         # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
         
     except requests.RequestException as e:
