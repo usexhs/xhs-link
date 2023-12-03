@@ -75,6 +75,12 @@ def get_307(url):
 
 # Define a function to validate alphanumeric string
 def is_valid_alphanumeric(s):
+    # the shared links ever in xhs haven't consumed the capacity of 6-symbol alphanumerics. 
+    # Say, it's 62^6 = 56,800,235,584
+    # Also, check Miller's Law
+    # Limit the length by now, will lift if the xhslink.com pool overflows 6-symbol. 
+    if (len(s) > 6):
+        return False
     return bool(re.match("^[a-zA-Z0-9]+$", s))
 
 
@@ -142,10 +148,16 @@ def resolve_full():
 
     if match:
         shortcode = match.group(1)
+        
+        if not is_valid_alphanumeric(shortcode):
+            app.logger.info(f"Invalid shortcode: {shortcode}")
+            return "Invalid shortcode"
+        
         # Make a request to resolve the shortcode
         real_location = get_307(f'https://xhslink.com/{shortcode}')
 
         return real_location
+    
     else: 
         app.logger.info(f"No valid URL found in \"{full_url}\" ")
         return "No valid URL found"
