@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <title>xhslink Resolver: Redirect Page</title>
+    <script src="/static/js/URL_handler.js"></script> 
+</head>
+ 
+
+<body onload="resolveFullURL('xhslink.com' + window.location.pathname)">
+    <div style="word-wrap: break-word; font-family: sans-serif;">
+        <div>
+            <code id="result"></code>
+            <!-- <code id="result"> {{ target }} </code> -->
+            <p>
+                <button onclick="copyToClipboard()">Copy</button>
+                <span id="copied"></span>
+            </p>
+            <p>
+                <button onclick="visitResolvedURL()">Visit</button>
+                <span id="vru-error"></span>
+            </p>
+        </div>
+
+        <hr>
+        <footer>
+            <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/xhs-link">Source Code</a></p>
+        </footer>
+    </div>
+</body>
+
+</html>

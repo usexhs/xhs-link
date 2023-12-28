@@ -1,5 +1,5 @@
 import os  
-from flask import Flask, redirect, request, send_file
+from flask import Flask, redirect, request, send_file, render_template
 from urllib.parse import unquote
 import requests
 from requests.adapters import HTTPAdapter
@@ -79,7 +79,7 @@ def is_valid_alphanumeric(s):
     # Say, it's 62^6 = 56,800,235,584
     # Also, check Miller's Law
     # Limit the length by now, will lift if the xhslink.com pool overflows 6-symbol. 
-    if (len(s) > 6):
+    if (len(s) > 7):
         return False
     return bool(re.match("^[a-zA-Z0-9]+$", s))
 
@@ -107,10 +107,11 @@ def handle_shortcode(shortcode):
         app.logger.info(f"Invalid shortcode: {shortcode}")
         return "Invalid shortcode"
 
-    full_url = f'https://xhslink.com/{shortcode}'
-    real_location = get_307(full_url)
+    # full_url = f'https://xhslink.com/{shortcode}'
+    # real_location = get_307(full_url)
 
-    return redirect(real_location, code=302)
+    # return redirect(real_location, code=302)
+    return send_file("templates/redirect.html")
 
 
 # Define a route for handling shortcode requests
