@@ -6,17 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
     <title>xhslink Resolver</title>
+    <script src="/static/js/URL_handler.js"></script> 
 </head>
 
 <body>
     <div style="word-wrap: break-word; font-family: sans-serif;">
+
         <h1>xhslink Resolver</h1>
+
         <div>
             <p>Inspired by <a href="https://b23.wtf"><code>b23.wtf</code></a>.</p>
             <p>Remove hidden tracking parameters in xhslink.com</p>
             <p>STILL UNDER INTENSIVE DEVELOPMENT</p>
         </div>
+
         <hr>
+
         <p>Replace "com" with <strong style="font-size: 1.2em;">"icu"</strong> to visit directly, or</p>
         <!-- <h2>Try it out</h2> -->
         <div>
@@ -24,7 +29,7 @@
                 <label for="fullurl">Enter your URL here to resolve:</label>
                 <input type="text" id="fullurl" name="fullurl" required>
             </p>
-            <button onclick="resolveFullURL()">Resolve</button>
+            <button onclick="resolveFullURL(document.getElementById('fullurl').value)">Resolve</button>
 
             <p>Resolved URL: <code id="result"></code></p>
             <p>
@@ -99,76 +104,16 @@
                 <p><code>$ curl -I http://xhslink.com/o2s5so</code></p>
                 <p><code>Location: https://www.xiaohongshu.com/discovery/item/6420c6650000000013011c8a?app_platform=ios&app_version=7.80&share_from_user_hidden=true&type=normal&xhsshare=CopyLink&appuid=5f2373dc0000000001008b32&apptime=1679927306</code></p>
             </div>
-
-            <hr>
-            <footer>
-                <p>Also available at <a href="https://xhs.li"><code>xhs.li</code></a></p>
-                <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/">Source Code</a></p>
-
-            </footer>
         </div>
-        <script>
-            function resolveFullURL() {
-                document.getElementById("copied").innerText = '';
-                document.getElementById("vru-error").innerText = '';
 
-                var fullURL = document.getElementById("fullurl").value;
-                var expr = /xhslink\.com\/([a-zA-Z0-9]+)/gm;
-                var regex = new RegExp(expr);
+        <hr>
 
-                if (fullURL.match(regex)) {
-                    document.getElementById("result").innerText = 'URL found, resolving...';
+        <footer>
+            <p>Also available at <a href="https://xhs.li"><code>xhs.li</code></a></p>
+            <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/xhs-link">Source Code</a></p>
+        </footer>
 
-                    fullURL = fullURL.match(regex);
-
-                    fetch(`/full/?url=${fullURL}`)
-                        .then(response => response.text())
-                        .then(data => {
-                            document.getElementById("result").innerText = `${data}`;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            document.getElementById("result").innerText = 'Error resolving the full URL.';
-                        });
-                }
-                else {
-                    document.getElementById("result").innerText = 'No valid URL found';
-                }
-            };
-            function copyToClipboard() {
-                document.getElementById("copied").innerText = '';
-                /* Get the text field */
-                var copyText = document.getElementById("result");
-
-                // Select the text field
-                // copyText.select();
-                // copyText.setSelectionRange(0, 99999); // For mobile devices
-
-                // Copy the text inside the text field
-                navigator.clipboard.writeText(copyText.innerText)
-                    .then(() => {
-                        document.getElementById("copied").innerText = 'Copied!';
-                    })
-                    .catch((err) => {
-                        document.getElementById("copied").innerText = 'Failed to Copy';
-                        console.error('Unable to copy text: ', err);
-                    });
-            };
-            function visitResolvedURL() {
-                document.getElementById("vru-error").innerText = '';
-
-                var ResolvedURL = document.getElementById("result").innerText;
-                var expr = /www\.xiaohongshu\.com/gm;
-                var regex = new RegExp(expr);
-
-                if (ResolvedURL.match(regex)) {
-                    window.open(ResolvedURL, '_blank', 'noopener,noreferrer');
-                }
-                else {
-                    document.getElementById("vru-error").innerText = 'No valid URL found';
-                }
-            }
-        </script>
+    </div>
 </body>
 
 </html>

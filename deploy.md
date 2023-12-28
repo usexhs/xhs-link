@@ -79,12 +79,18 @@ docker compose up -d
 
 Then the service should be available at "127.0.0.1:5000" of your server. We strongly suggest you use a reserve proxy. Here's a basic example of corresponding `nginx`. 
 
+For static files like .css and .js, we suggest using the reverse proxy itself to serve them for better performance. 
+
 ```nginx
 # nginx.conf
 
 server {
     listen 80;
     server_name your_domain.com;  # Change this to your domain or IP address
+
+    location /static/ {
+        try_files $uri $uri/;
+    }
 
     location / {
         proxy_pass http://127.0.0.1:5000;  

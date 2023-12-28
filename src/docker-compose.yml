@@ -16,6 +16,8 @@ services:
       - xhslink-proxy
     volumes:
       - ./index.html:/app/index.html
+      - ./static:/app/static
+      - ./templates:/app/templates
     environment:
       PROXY_HOST: ""
       PROXY_PORT: ""
