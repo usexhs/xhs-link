@@ -43,7 +43,7 @@ services:
 
   postgres:
     container_name: xhs-link_postgres
-    image: postgres:13-alpine
+    image: postgres:12.2-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: xhslink
