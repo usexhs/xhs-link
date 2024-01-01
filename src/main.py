@@ -95,7 +95,7 @@ def lookup_shortcode(shortcode):
     db_result = sql_handler.get_shortcode_from_database(shortcode)
     
     if db_result:
-        app.logger.info(f"shortcode \"{shortcode}\" found in databse, Result: {db_result}")
+        app.logger.info(f"shortcode \"{shortcode}\" found in database, Result: {db_result}")
         return db_result
     
     else: 
