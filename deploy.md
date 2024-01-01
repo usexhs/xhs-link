@@ -13,6 +13,7 @@ Clone this repo.
 ```bash
 git clone https://github.com/usexhs/xhs-link.git
 cd xhs-link/src
+cp docker-compose.example.yml docker-compose.yml
 ```
 
 <!-- ### w/o Proxy

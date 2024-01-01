@@ -1,0 +1,57 @@
+version: '3'
+
+networks:
+  xhslink-proxy:
+    name: proxy_network
+    external: true
+
+  xhslink-internal:
+    external: false
+
+
+services: 
+  xhs-link:
+    container_name: xhs-link
+    build:
+      context: .
+    image: xhs-link:latest
+    restart: unless-stopped
+    networks: 
+      - xhslink-proxy
+      - xhslink-internal
+    volumes:
+      - ./index.html:/app/index.html
+      - ./static:/app/static
+      - ./templates:/app/templates
+    environment:
+      # Proxy Settings
+      PROXY_HOST: ""
+      PROXY_PORT: ""
+      PROXY_USERNAME: ""
+      PROXY_PASSWORD: ""
+      # Server Listening
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      # Postgres Setting
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: xhslink
+      POSTGRES_PASSWORD: xhslink-password
+      # POSTGRES_DB: shortlinks
+    ports:
+      - 127.0.0.1:5000:5000
+
+  postgres:
+    container_name: xhs-link_postgres
+    image: postgres:13-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: xhslink
+      POSTGRES_PASSWORD: xhslink-password
+      # POSTGRES_DB: shortlinks
+    # ports:
+    #   - "5432:5432"
+    networks:
+      - xhslink-internal
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data

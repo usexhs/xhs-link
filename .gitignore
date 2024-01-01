@@ -1,2 +1,4 @@
 .venv
 .vscode
+src/db
+src/docker-compose.yml

@@ -1,11 +1,17 @@
 import os  
+import re
+import logging
+
 from flask import Flask, redirect, request, send_file, render_template
-from urllib.parse import unquote
+from urllib.parse import unquote 
+
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-import re
-import logging
+
+# import lib.redis_handler # WIP
+from lib import sql_handler
+
 # import argparse
 # import waitress
 
@@ -84,6 +90,21 @@ def is_valid_alphanumeric(s):
     return bool(re.match("^[a-zA-Z0-9]+$", s))
 
 
+# separate the lookup operation
+def lookup_shortcode(shortcode):
+    db_result = sql_handler.get_shortcode_from_database(shortcode)
+    
+    if db_result:
+        app.logger.info(f"shortcode \"{shortcode}\" found in databse, Result: {db_result}")
+        return db_result
+    
+    else: 
+        app.logger.info(f"shortcode \"{shortcode}\" not found, perform request now")
+        actual_link = get_307(f'https://xhslink.com/{shortcode}')
+        sql_handler.add_shortcode_to_database(shortcode, actual_link)
+        return actual_link
+    
+    
 # Serve the frontend
 @app.route('/', methods=['GET'])
 def handle_index():
@@ -107,10 +128,8 @@ def handle_shortcode(shortcode):
         app.logger.info(f"Invalid shortcode: {shortcode}")
         return "Invalid shortcode"
 
-    # full_url = f'https://xhslink.com/{shortcode}'
-    # real_location = get_307(full_url)
-
     # return redirect(real_location, code=302)
+    # enforce js support on client side
     return send_file("templates/redirect.html")
 
 
@@ -126,10 +145,7 @@ def resolve_code(shortcode):
         app.logger.info(f"Invalid shortcode: {shortcode}")
         return "Invalid shortcode"
 
-    # Construct the full URL
-    full_url = f'https://xhslink.com/{shortcode}'
-    # Do the same as in the handle_shortcode function
-    real_location = get_307(full_url)
+    real_location = lookup_shortcode(shortcode)
 
     return real_location
 
@@ -155,13 +171,14 @@ def resolve_full():
             return "Invalid shortcode"
         
         # Make a request to resolve the shortcode
-        real_location = get_307(f'https://xhslink.com/{shortcode}')
+        real_location = lookup_shortcode(shortcode)
 
         return real_location
     
     else: 
         app.logger.info(f"No valid URL found in \"{full_url}\" ")
         return "No valid URL found"
+
 
 if __name__ == '__main__':
     # Parse command-line arguments
@@ -171,6 +188,9 @@ if __name__ == '__main__':
     # args = parser.parse_args()
     # Run the Flask application
     # app.run(host=args.host, port=args.port)
+    
+    # try postgres db
+    sql_handler.create_table_if_not_exists()
     
     # Run the Flask application
     from waitress import serve
