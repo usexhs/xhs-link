@@ -6,11 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
     <title>xhslink Resolver: Redirect Page</title>
+    <link rel="stylesheet" href="/static/css/noscript.css">
     <script src="/static/js/URL_handler.js"></script> 
 </head>
  
 
 <body onload="resolveFullURL('xhslink.com' + window.location.pathname)">
+    <noscript>
+        <div class="noscript-overlay">
+            <div class="noscript-dialog">
+                <p><strong>This page needs Javascript enabled to work properly.</strong></p>
+            </div>
+        </div>
+    </noscript>
     <div style="word-wrap: break-word; font-family: sans-serif;">
         <div>
             <code id="result"></code>
