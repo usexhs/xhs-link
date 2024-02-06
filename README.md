@@ -31,9 +31,11 @@ Here `YOUR_SHORT_CODE` should be an alphanumberic string, like
 <strong>API: Resolve the full URL</strong>
 <p><code>https://xhs.li/full/?url=(http(s)://)xhslink.com/YOUR_SHORT_CODE</code></p>
 
-## Copyright
+## License
 
-© 2023 Little Sweet Potato. All rights reserved.
+![AGPLv3-icon](https://www.gnu.org/graphics/agplv3-155x51.png)
+
+© Little Sweet Potato. This project is licensed under AGPLv3.
 
 ## Verify the Commits
 
