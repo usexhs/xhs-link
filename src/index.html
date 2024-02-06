@@ -37,9 +37,9 @@
                 <label for="fullurl">Enter your URL here to resolve:</label>
                 <input type="text" id="fullurl" name="fullurl" required>
             </p>
-            <button onclick="resolveFullURL(document.getElementById('fullurl').value)">Resolve</button>
+            <button onclick="resolveFullURL(document.getElementById('fullurl').value)">Go!</button>
 
-            <p>Resolved URL: <code id="result"></code></p>
+            <p>Result: <code id="result"></code></p>
             <p>
                 <button onclick="copyToClipboard()">Copy to Clipboard</button>
                 <span id="copied"></span>
@@ -53,7 +53,12 @@
         <hr>
 
         <h2>Usage Example</h2>
-        <div>
+
+        <button onclick="toggleVisibility()" class="toggle-button">Show More</button>
+
+        <div id="hidden-content" style="display: none;">
+
+        <!-- <div> -->
             <p>Look at this text:</p>
             <p style="color: grey;max-width: 20em;">
                 36 摆烂可耻但很快乐发布了一篇小红书笔记，快来看吧！
@@ -66,11 +71,9 @@
                 <strong>paste</strong> into the form above,
                 and you will get the original link.
             </p>
-        </div>
+        <!-- </div> -->
 
-        <button onclick="toggleVisibility()" class="toggle-button">Show More</button>
 
-        <div id="hidden-content" style="display: none;">
             <!-- <p>You can also try the following usages:</p> -->
             <!-- <hr> -->
             <p><strong>Redirect</strong>: replace "com" with <strong style="font-size: 1.2em;">"icu"</strong>. </p>
@@ -122,7 +125,7 @@
 
         <footer>
             <p>Also available at <a href="https://xhs.li"><code>xhs.li</code></a></p>
-            <p>© 2023 Little Sweet Potato. All rights reserved. <a href="https://github.com/usexhs/xhs-link">Source Code</a></p>
+            <p>© Little Sweet Potato. This project is licensed under AGPLv3. <a href="https://github.com/usexhs/xhs-link">Source Code</a></p>
         </footer>
 
     </div>
