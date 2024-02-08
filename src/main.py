@@ -109,7 +109,7 @@ def lookup_shortcode(shortcode):
 @app.route('/', methods=['GET'])
 def handle_index():
     # Extract the client IP from the X-Forwarded-For header or use the remote address
-    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    client_ip = request.headers.get('Cf-Connecting-Ip', request.headers)
     # Log the client IP along with other information
     app.logger.info(f"GET /, Client IP: {client_ip}")
 
@@ -120,7 +120,7 @@ def handle_index():
 @app.route('/<shortcode>', methods=['GET'])
 def handle_shortcode(shortcode):
     # Extract the client IP from the X-Forwarded-For header or use the remote address
-    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    client_ip = request.headers.get('Cf-Connecting-Ip', request.headers)
     # Log the client IP along with other information
     app.logger.info(f"GET /{shortcode}, Client IP: {client_ip}")
 
@@ -137,7 +137,7 @@ def handle_shortcode(shortcode):
 @app.route('/code/<shortcode>', methods=['GET'])
 def resolve_code(shortcode):
     # Extract the client IP from the X-Forwarded-For header or use the remote address
-    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    client_ip = request.headers.get('Cf-Connecting-Ip', request.headers)
     # Log the client IP along with other information
     app.logger.info(f"GET /code/{shortcode}, Client IP: {client_ip}")
 
@@ -156,7 +156,7 @@ def resolve_full():
     full_url = request.args.get('url', '')
 
     # Extract the client IP from the X-Forwarded-For header or use the remote address
-    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    client_ip = request.headers.get('Cf-Connecting-Ip', request.headers)
     # Log the client IP along with other information
     app.logger.info(f"GET /full/?url={full_url}, Client IP: {client_ip}")
 
